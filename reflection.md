@@ -7,6 +7,31 @@
 - Briefly describe your initial UML design.
 - What classes did you include, and what responsibilities did you assign to each?
 
+    - PetOwner class
+        - Stores the owner of pets information (name, daily hours, years of experience)
+        - Responsibilities: Look at time constraints so the tasks can fit the owner's timing.
+        - Attributes: name, years_experience, daily_hours
+        - Methods: getName(), get_available_time(), check_experience()
+
+    - Pet class
+        - Stores all pet information (name, type, food, special needs)
+        - Responsibilities: Allows for people to select pet preference.
+        - Attributes: name, speciesType, foodType, list_special_needs
+        - Methods: getName(), getType(), getFoodType(), special_needs()
+
+    - Task class
+        - Stores all task details for the pet (duration, priority)
+        - Responsibilities: Represents pet care activities like walking or feeding.
+        - Attributes: time, priorTasks
+        - Methods: time_duration(), pet_priority()
+
+    - Scheduler class
+        - Stores references to petOwner, pet and list of tasks.
+        - Responsibilities: Generate the daily plan for pets by prioritizing tasks within time constraints.
+        - Attributes: owner, pet, prior_tasks, time_avail
+        - Methods: priority_tasks(), schedule-tasks(), generate_plan()
+
+
 **b. Design changes**
 
 - Did your design change during implementation?
