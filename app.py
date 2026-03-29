@@ -285,6 +285,54 @@ if st.button("Generate schedule"):
         else:
             st.info("No pending tasks to schedule.")
         
+        # Display tasks sorted by duration (Improvement #3)
+        st.markdown("### ⏱️ Tasks Sorted by Duration")
+        sort_order = st.radio("Sort order", ("Shortest first", "Longest first"))
+        ascending = sort_order == "Shortest first"
+        sorted_by_time = st.session_state.scheduler.sort_by_time(ascending=ascending)
+        if sorted_by_time:
+            time_sort_data = []
+            for i, task in enumerate(sorted_by_time, 1):
+                pet_name = task.get_pet().getName() if task.get_pet() else "Unknown"
+                time_sort_data.append({
+                    "#": i,
+                    "Pet": pet_name,
+                    "Task": task.description,
+                    "Duration (min)": task.time_duration(),
+                    "Frequency": task.frequency
+                })
+            st.dataframe(time_sort_data, use_container_width=True)
+        else:
+            st.info("No tasks to sort.")
+        
+        # Filter tasks by pet and status (Improvement #2)
+        st.markdown("### 🔍 Filter Tasks")
+        col_filter1, col_filter2 = st.columns(2)
+        with col_filter1:
+            filter_pet = st.selectbox("Filter by Pet", ["All"] + list(st.session_state.pets.keys()))
+        with col_filter2:
+            filter_status = st.selectbox("Filter by Status", ["All", "Pending", "Completed"])
+        
+        pet_name_filter = None if filter_pet == "All" else filter_pet
+        status_filter = None if filter_status == "All" else filter_status.lower()
+        
+        filtered_tasks = st.session_state.scheduler.filter_tasks(status=status_filter, pet_name=pet_name_filter)
+        if filtered_tasks:
+            filter_data = []
+            for task in filtered_tasks:
+                pet_name = task.get_pet().getName() if task.get_pet() else "Unknown"
+                filter_data.append({
+                    "Pet": pet_name,
+                    "Task": task.description,
+                    "Duration (min)": task.time_duration(),
+                    "Status": "✓ Completed" if task.is_completed else "○ Pending",
+                    "Priority": task.pet_priority()
+                })
+            st.dataframe(filter_data, use_container_width=True)
+            st.write(f"📊 Showing {len(filtered_tasks)} task(s)")
+        else:
+            st.info("No tasks match the selected filters.")
+        
         # Display time-of-day optimization (Improvement #5)
         st.markdown("### 🕐 Tasks by Optimal Time")
         time_of_day_hour = st.slider("Select time of day", 0, 23, 9, help="9 = 9 AM, 18 = 6 PM")
@@ -317,6 +365,35 @@ if st.button("Generate schedule"):
                         st.write(f"**Status:** {'✓ Completed' if task.is_completed else '○ Pending'}")
         else:
             st.warning("No tasks could be scheduled within the time constraints.")
+        
+        # Display conflict detection (Improvements #4, #5)
+        st.markdown("### 🚨 Scheduling Conflicts & Warnings")
+        conflict_check = st.session_state.scheduler.lightweight_conflict_check(scheduled)
+        
+        if conflict_check["success"]:
+            if conflict_check["has_conflicts"]:
+                st.error(f"⚠️ {conflict_check['critical_count']} conflict(s) detected!")
+                for warning in conflict_check["warnings"]:
+                    st.warning(warning)
+                
+                # Show detailed conflict info
+                st.markdown("#### Conflict Details:")
+                for idx, conflict in enumerate(conflict_check["conflicts"], 1):
+                    task1, task2 = conflict["tasks"]
+                    pet1 = task1.get_pet().getName() if task1.get_pet() else "Unknown"
+                    pet2 = task2.get_pet().getName() if task2.get_pet() else "Unknown"
+                    
+                    if conflict["same_pet"]:
+                        st.error(f"**🔴 DOUBLE BOOKING**: [{pet1}] {task1.description} conflicts with {task2.description}")
+                    else:
+                        st.warning(f"**⚠️ Overlap**: [{pet1}] {task1.description} overlaps with [{pet2}] {task2.description}")
+            else:
+                st.success("✓ No scheduling conflicts detected!")
+            
+            if conflict_check["warning_count"] > 0:
+                st.info(f"📋 {conflict_check['warning_count']} warning(s) found during validation")
+        else:
+            st.error(f"❌ Conflict check failed: {conflict_check['status_message']}")
         
         # Display unscheduled tasks with reasons (Improvement #8)
         unscheduled = st.session_state.scheduler.get_unscheduled_tasks_with_reasons()

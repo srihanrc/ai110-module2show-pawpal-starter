@@ -47,6 +47,8 @@
 - What constraints does your scheduler consider (for example: time, priority, preferences)?
 - How did you decide which constraints mattered most?
 
+The scheduler considered time, priority, owner experience, pet clustering, priority of tasks, and time of day activities. Time and priority mattered most because pets need to get the care they may need in a certain time or it may lead to bad outcomes. The owners should also have pet experience if they want to work with pets. 
+
 **b. Tradeoffs**
 
 - Describe one tradeoff your scheduler makes.
@@ -63,11 +65,14 @@ My scheduler is prioritizing the higher priority tasks first in which it may ski
 - How did you use AI tools during this project (for example: design brainstorming, debugging, refactoring)?
 - What kinds of prompts or questions were most helpful?
 
+I used AI to write my classes to make improvements on the methods. This was more useful when it gave my method names that actually made sense for the class and this also helped me to debug and test code. The prompts were very useful when it was able to write test cases for me. 
+
 **b. Judgment and verification**
 
 - Describe one moment where you did not accept an AI suggestion as-is.
 - How did you evaluate or verify what the AI suggested?
 
+I did not accept it when it made changes to my code to fix test cases because I was trying this path and the same amount of test cases would pass and fail. I looked and saw the code it was suggesting and it didn't really show the change that would help make my test error disappear. 
 ---
 
 ## 4. Testing and Verification
@@ -87,6 +92,7 @@ My scheduler is prioritizing the higher priority tasks first in which it may ski
 - How confident are you that your scheduler works correctly?
 - What edge cases would you test next if you had more time?
 
+I am like 70% percent sure that my scheudler works correctly. If I had more time, I would have added a bunch more tasks to see if it would do the higher priority tasks first and also test for circular dependency to see if two classes are entirely dependent on each other. 
 ---
 
 ## 5. Reflection
@@ -95,10 +101,16 @@ My scheduler is prioritizing the higher priority tasks first in which it may ski
 
 - What part of this project are you most satisfied with?
 
+I was satisfied with my UML design in the beginning it was easy to read and understand as well as the methods and classes that were being implemented. 
+
 **b. What you would improve**
 
 - If you had another iteration, what would you improve or redesign?
 
+I would have studied my test cases and figure out ways to where I can pass all my test cases and make improvements on the UI design as well as it's not fully creative. 
+
 **c. Key takeaway**
 
 - What is one important thing you learned about designing systems or working with AI on this project?
+
+I learned how these 4 classes work with each other to successfully make a pet shop. Users can get pets and learn how to care for the pet and the exercises the pets can do. Working with AI made it much easier to generate methods for each class instead of me having to think about different methods that could be used for each class. 
