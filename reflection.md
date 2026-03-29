@@ -52,6 +52,8 @@
 - Describe one tradeoff your scheduler makes.
 - Why is that tradeoff reasonable for this scenario?
 
+My scheduler is prioritizing the higher priority tasks first in which it may skip some lower priority tasks. This is reasonable because pet owners might need critical tasks like medications for the pets. 
+
 ---
 
 ## 3. AI Collaboration

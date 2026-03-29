@@ -98,10 +98,30 @@ def main():
         associated_pet=rabbit
     )
     
+    # Create conflicting tasks for DEMO - these will overlap!
+    # Task 8: Grooming for Max (will cause time conflict)
+    task8 = Task(
+        description="Grooming session",
+        time=25,
+        frequency="Daily",
+        associated_pet=dog,
+        criticality="high"
+    )
+    
+    # Task 9: Playtime for Max (will also create conflicts)
+    task9 = Task(
+        description="Playtime with Max",
+        time=20,
+        frequency="Daily",
+        associated_pet=dog
+    )
+    
     # Add tasks to pets
     dog.add_task(task1)
     dog.add_task(task2)
     dog.add_task(task3)
+    dog.add_task(task8)  # Add conflicting task
+    dog.add_task(task9)  # Add another conflicting task
     
     cat.add_task(task4)
     cat.add_task(task5)
@@ -139,10 +159,44 @@ def main():
     # Generate and print the daily schedule
     print(scheduler.generate_plan())
     
+    # Test lightweight conflict detection
+    print("\n" + "="*70)
+    print("CONFLICT DETECTION TEST")
+    print("="*70)
+    print("\nRunning lightweight conflict check...\n")
+    
+    # Get lightweight report (handles errors gracefully)
+    report = scheduler.get_lightweight_report()
+    print(report)
+    
+    # Get detailed conflict info
+    conflict_check = scheduler.lightweight_conflict_check()
+    
+    print("\nDetailed Conflict Information:")
+    print(f"  • Total warnings: {conflict_check['warning_count']}")
+    print(f"  • Critical conflicts: {conflict_check['critical_count']}")
+    print(f"  • Check successful: {conflict_check['success']}")
+    
+    if conflict_check['has_conflicts']:
+        print("\n⚠️  CONFLICTS DETECTED!")
+        for warning in conflict_check['warnings']:
+            print(f"    {warning}")
+    else:
+        print("\n✓ No conflicts found!")
+    
     # Mark one task as completed and show updated schedule
-    print("\n--- Marking 'Morning walk' as completed ---\n")
+    print("\n" + "="*70)
+    print("--- Marking 'Morning walk' as completed and auto-creating next occurrence ---")
+    print("="*70 + "\n")
     task1.mark_completed()
     print(scheduler.generate_plan())
+    
+    # Check for conflicts after marking task complete
+    print("\n" + "="*70)
+    print("CONFLICT CHECK AFTER COMPLETION")
+    print("="*70 + "\n")
+    updated_report = scheduler.get_lightweight_report()
+    print(updated_report)
 
 
 if __name__ == "__main__":

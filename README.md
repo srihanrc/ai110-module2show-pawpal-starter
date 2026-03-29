@@ -41,3 +41,8 @@ pip install -r requirements.txt
 5. Add tests to verify key behaviors.
 6. Connect your logic to the Streamlit UI in `app.py`.
 7. Refine UML so it matches what you actually built.
+
+
+# Smarter Scheduling
+
+The PawPals+ app now has high priority scheduling where high prior tasks gets scheduled first, gap-filling algorithms where large tasks are done before small tasks and describes the day by day routine like morning exercises for the pet. There is also pet clustering which groups different kind of pets in one area for more efficient care.
