@@ -43,6 +43,12 @@ pip install -r requirements.txt
 7. Refine UML so it matches what you actually built.
 
 
-# Smarter Scheduling
+## Smarter Scheduling
 
 The PawPals+ app now has high priority scheduling where high prior tasks gets scheduled first, gap-filling algorithms where large tasks are done before small tasks and describes the day by day routine like morning exercises for the pet. There is also pet clustering which groups different kind of pets in one area for more efficient care.
+
+## Testing PawPal+
+
+These tests verify whether or not high-priority tasks are scheduled first, the total time doesn't go over to what the owner can handle, cache invalidation after task changes and any unclear tasks get clear explanations.
+
+Confidence Level is 3 stars because not all my tests have passed and I am not sure why the tests aren't passed the way they should be. 

@@ -77,6 +77,11 @@ My scheduler is prioritizing the higher priority tasks first in which it may ski
 - What behaviors did you test?
 - Why were these tests important?
 
+1. High Priority tasks are being scheduled first (priority_tasks())
+2. Tasks from multiple pets get grouped accordingly (schedule_clustered_by_pet())
+3. Cache invalidation if any task changes.(get_cached_total_time())
+4. The total scheduled time never goes past owner's available time (is_feasible())
+
 **b. Confidence**
 
 - How confident are you that your scheduler works correctly?

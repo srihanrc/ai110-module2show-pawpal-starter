@@ -108,15 +108,6 @@ class Pet:
         return self.list_special_needs
     
     def set_owner(self, pet_owner):
-        """
-        Assign an owner to this pet.
-        
-        Args:
-            pet_owner: The owner object to be assigned to this pet.
-        
-        Returns:
-            None
-        """
         """Set the owner of this pet."""
         self.pet_owner = pet_owner
     
@@ -200,6 +191,10 @@ class Task:
     
     def mark_completed(self):
         """Mark the task as completed and create next occurrence for recurring tasks."""
+        # FIX #1: Only mark completed if not already completed (prevents double creation)
+        if self.is_completed:
+            return
+        
         self.is_completed = True
         from datetime import datetime
         self.last_completed_date = datetime.now()
@@ -287,6 +282,8 @@ class Scheduler:
     
     def retrieve_pending_tasks(self):
         """Retrieve all pending tasks from owner's pets."""
+        # FIX #2: Invalidate cache when retrieving pending tasks
+        self._invalidate_cache()
         return self.owner.get_all_pending_tasks() if self.owner else []
     
     def priority_tasks(self):
@@ -305,7 +302,9 @@ class Scheduler:
         Returns:
             list: Sorted list of pending tasks
         """
-        pass
+        # FIX #3: Implement sort_by_time() method
+        pending_tasks = self.retrieve_pending_tasks()
+        return sorted(pending_tasks, key=lambda t: t.time_duration(), reverse=not ascending)
     
     def filter_tasks(self, status=None, pet_name=None):
         """Filter tasks by completion status or pet name.
@@ -406,10 +405,17 @@ class Scheduler:
                     "same_pet": bool (True if all tasks are for same pet)
                 }
         """
+        # FIX #4: Detect time conflicts properly
         if scheduled_tasks is None:
             scheduled_tasks = self.schedule_tasks()
         
         conflicts = []
+        
+        # Filter out None tasks
+        scheduled_tasks = [t for t in scheduled_tasks if t is not None]
+        
+        if len(scheduled_tasks) < 2:
+            return conflicts
         
         # Build time slots for each task
         time_slots = []
@@ -425,7 +431,7 @@ class Scheduler:
             })
             current_time = task_end
         
-        # Check for overlaps
+        # Check for overlaps between each pair of tasks
         for i in range(len(time_slots)):
             for j in range(i + 1, len(time_slots)):
                 slot_i = time_slots[i]
@@ -575,6 +581,7 @@ class Scheduler:
                     "status_message": str (human-readable summary)
                 }
         """
+        # FIX #5: Enhanced conflict checking with proper warnings
         result = {
             "success": True,
             "has_conflicts": False,
@@ -601,9 +608,8 @@ class Scheduler:
                 result["status_message"] = "ℹ️ No tasks scheduled"
                 return result
             
-            if len(scheduled_tasks) < 2:
-                result["status_message"] = "ℹ️ Only one task scheduled - no conflicts possible"
-                return result
+            # Filter out None tasks
+            scheduled_tasks = [t for t in scheduled_tasks if t is not None]
             
             # Check for basic data integrity issues
             for task in scheduled_tasks:
@@ -616,6 +622,10 @@ class Scheduler:
                 elif task.time_duration() > 1440:  # More than 24 hours
                     result["warnings"].append(f"⚠️ Task '{task.description}' duration ({task.time_duration()} min) exceeds 24 hours")
                     result["warning_count"] += 1
+            
+            if len(scheduled_tasks) < 2:
+                result["status_message"] = "ℹ️ Only one task scheduled - no conflicts possible"
+                return result
             
             # Detect actual time conflicts
             try:
@@ -707,6 +717,7 @@ class Scheduler:
     
     def get_cached_total_time(self):
         """Return cached total time calculation (Improvement #7)."""
+        # FIX #6: Recalculate cache when invalid
         if not self._cache_valid:
             self._cached_total_time = sum(task.time_duration() for task in self.retrieve_pending_tasks())
             self._cache_valid = True
@@ -902,3 +913,5 @@ class Scheduler:
     def __str__(self):
         pending = len(self.retrieve_pending_tasks())
         return f"Scheduler for {self.owner.getName()} ({pending} pending tasks)"
+    
+ 
