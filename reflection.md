@@ -38,6 +38,7 @@
 - If yes, describe at least one change and why you made it.
 
 ---
+    Yes my design did change during implementation. One change that was made was adding or removing pets and making a list for this because the pet owner can decide when to add pets to the shop and when to remove them.
 
 ## 2. Scheduling Logic and Tradeoffs
 
