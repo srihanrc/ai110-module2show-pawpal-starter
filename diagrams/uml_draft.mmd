@@ -1,0 +1,43 @@
+classDiagram
+    class PetOwner {
+        +String name
+        +int years_experience
+        +float daily_hours
+        +getName()
+        +get_available_time()
+        +check_experience()
+    }
+
+    class Pet {
+        +String name
+        +String speciesType
+        +String foodType
+        +List~String~ list_special_needs
+        +getName()
+        +getType()
+        +getFoodType()
+        +special_needs()
+    }
+
+    class Task {
+        +String name
+        +float time_duration
+        +int priority
+        +time_duration()
+        +pet_priority()
+    }
+
+    class Scheduler {
+        +PetOwner owner
+        +List~Pet~ pets
+        +List~Task~ prior_tasks
+        +float time_avail
+        +priority_tasks()
+        +schedule_tasks()
+        +generate_plan()
+    }
+
+    PetOwner "1" o-- "*" Pet : owns
+    Scheduler "1" o-- "*" Pet : manages
+    Scheduler "1" o-- "*" Task : schedules
+    Task --> Pet : for

@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="900" height="360" viewBox="0 0 900 360">
+  <defs>
+    <marker id="arrow" markerWidth="12" markerHeight="12" refX="11" refY="6" orient="auto-start-reverse" markerUnits="strokeWidth">
+      <path d="M0,0 L12,6 L0,12 z" fill="#1f78b4" />
+    </marker>
+    <style>
+      .box { fill:#f8f9fa; stroke:#222; stroke-width:1.5; rx:8; ry:8 }
+      .label { font-family: Arial, Helvetica, sans-serif; font-size:16px; fill:#1f78b4; font-weight:700 }
+      .st { stroke:#1f78b4; stroke-width:2.5; fill:none }
+      .sublabel { font-family: Arial, Helvetica, sans-serif; font-size:12px; fill:#333 }
+      .relation { font-family: Arial, Helvetica, sans-serif; font-size:13px; fill:#1f78b4; font-weight:700 }
+    </style>
+  </defs>
+
+  <!-- PetOwner -->
+  <rect x="40" y="40" width="200" height="100" class="box" />
+  <text x="140" y="65" text-anchor="middle" class="label">PetOwner</text>
+  <text x="140" y="88" text-anchor="middle" class="sublabel">name, years_experience, daily_hours</text>
+  <text x="140" y="106" text-anchor="middle" class="sublabel">getName(), get_available_time()</text>
+
+  <!-- Pet -->
+  <rect x="360" y="40" width="200" height="100" class="box" />
+  <text x="460" y="65" text-anchor="middle" class="label">Pet</text>
+  <text x="460" y="88" text-anchor="middle" class="sublabel">name, speciesType, foodType</text>
+  <text x="460" y="106" text-anchor="middle" class="sublabel">special_needs()</text>
+
+  <!-- Task -->
+  <rect x="360" y="200" width="200" height="100" class="box" />
+  <text x="460" y="225" text-anchor="middle" class="label">Task</text>
+  <text x="460" y="248" text-anchor="middle" class="sublabel">time_duration, priority</text>
+  <text x="460" y="266" text-anchor="middle" class="sublabel">time_duration(), pet_priority()</text>
+
+  <!-- Scheduler -->
+  <rect x="680" y="120" width="200" height="100" class="box" />
+  <text x="780" y="145" text-anchor="middle" class="label">Scheduler</text>
+  <text x="780" y="168" text-anchor="middle" class="sublabel">owner, pets, prior_tasks, time_avail</text>
+  <text x="780" y="186" text-anchor="middle" class="sublabel">priority_tasks(), generate_plan()</text>
+
+  <!-- Arrows -->
+  <line x1="240" y1="90" x2="360" y2="90" class="st" marker-end="url(#arrow)" />
+  <text x="300" y="80" text-anchor="middle" class="relation">owns</text>
+
+  <line x1="560" y1="150" x2="680" y2="150" class="st" marker-end="url(#arrow)" />
+  <text x="620" y="140" text-anchor="middle" class="relation">manages</text>
+
+  <line x1="760" y1="220" x2="560" y2="220" class="st" marker-end="url(#arrow)" />
+  <text x="660" y="210" text-anchor="middle" class="relation">schedules</text>
+
+  <line x1="460" y1="200" x2="460" y2="140" class="st" marker-end="url(#arrow)" />
+  <text x="472" y="170" text-anchor="start" class="relation">for</text>
+
+</svg>
