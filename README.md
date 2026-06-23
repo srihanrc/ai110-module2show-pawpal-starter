@@ -71,6 +71,8 @@ Sample test output:
 
 ## 📐 Smarter Scheduling
 
+The PawPals+ app now has high priority scheduling where high prior tasks gets scheduled first, gap-filling algorithms where large tasks are done before small tasks and describes the day by day routine like morning exercises for the pet. There is also pet clustering which groups different kind of pets in one area for more efficient care.
+
 > Fill in once you've implemented scheduling logic.
 
 | Feature | Method(s) | Notes |
