@@ -62,12 +62,25 @@ pytest
 # Run with coverage:
 pytest --cov
 ```
+These tests verify whether or not high-priority tasks are scheduled first, the total time doesn't go over to what the owner can handle, cache invalidation after task changes and any unclear tasks get clear explanations.
+Confidence Level is 5 stars because all my tests have passed.
+
 
 Sample test output:
 
 ```
 # Paste your pytest output here
-```
+
+C:\Srihan\projects\ai110-module2show-pawpal-starter>python -m pytest
+==================================================== test session starts =====================================================
+platform win32 -- Python 3.12.6, pytest-9.0.2, pluggy-1.6.0
+rootdir: C:\Srihan\projects\ai110-module2show-pawpal-starter
+plugins: anyio-4.12.1
+collected 7 items                                                                                                             
+
+tests\test_pawpal.py .......                                                                                            [100%]
+
+===================================================== 7 passed in 0.08s ======================================================
 
 ## 📐 Smarter Scheduling
 

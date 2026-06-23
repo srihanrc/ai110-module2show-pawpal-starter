@@ -202,15 +202,18 @@ class Scheduler:
 		task's `time_duration` is used as a fallback.
 		"""
 		def key_fn(t: Task):
+			# prefer tasks with explicit time first (0), then tasks without time (1)
 			tval = getattr(t, "time", None)
-			if tval is None:
-				return float(t.time_duration)
 			if isinstance(tval, datetime):
-				return float(tval.timestamp())
-			try:
-				return float(tval)
-			except Exception:
-				return float(t.time_duration)
+				return (0, float(tval.timestamp()))
+			# numeric times
+			if tval is not None:
+				try:
+					return (0, float(tval))
+				except Exception:
+					pass
+			# fallback: place after timed tasks and sort by duration
+			return (1, float(t.time_duration))
 
 		return sorted(tasks, key=key_fn, reverse=not ascending)
 
