@@ -114,17 +114,75 @@ st.divider()
 st.subheader("Build Schedule")
 st.caption("This button should call your scheduling logic once you implement it.")
 
+# UI control: whether to show only due (recurring) tasks in lists
+due_only = st.checkbox("Show only due tasks", value=True)
+
 if st.button("Generate schedule"):
     if st.session_state.owner is None:
         st.warning("Add an owner and pets first.")
     else:
         scheduler = Scheduler(st.session_state.owner)
         plan = scheduler.generate_plan()
+
         if not plan:
             st.info("No tasks fit into available time.")
         else:
-            st.subheader("Today's Schedule")
+            st.success("Today's Schedule")
+            # build table rows
+            rows = []
             for pet_name, tasks in plan.items():
-                st.write(f"- {pet_name}:")
                 for task_name in tasks:
-                    st.write(f"    - {task_name}")
+                    rows.append({"pet": pet_name, "task": task_name})
+            if rows:
+                st.table(rows)
+
+        # Show additional scheduler views with nicer components
+        pr = scheduler.priority_tasks()
+        if due_only:
+            pr = [t for t in pr if t.is_due()]
+        pr_rows = [{"task": t.name, "pet": (t.pet.name if t.pet else "(unassigned)"), "minutes": int(t.time_duration_hours() * 60), "frequency": t.frequency} for t in pr]
+        st.subheader("Priority (due) tasks")
+        if pr_rows:
+            st.table(pr_rows)
+        else:
+            st.write("(no priority tasks)")
+
+        all_tasks = st.session_state.owner.get_all_tasks(incomplete_only=False)
+        # Sorted by time
+        tasks_by_time = scheduler.sort_by_time(all_tasks)
+        time_rows = [{"task": t.name, "pet": (t.pet.name if t.pet else "(unassigned)"), "time": getattr(t, "time", None), "minutes": int(t.time_duration_hours() * 60)} for t in tasks_by_time]
+        st.subheader("Tasks sorted by time")
+        if time_rows:
+            st.table(time_rows)
+        else:
+            st.write("(no tasks)")
+
+        # Sorted by duration
+        dur_rows = [{"task": t.name, "pet": (t.pet.name if t.pet else "(unassigned)"), "minutes": int(t.time_duration_hours() * 60)} for t in scheduler.sort_by_duration(all_tasks)]
+        st.subheader("Tasks sorted by duration")
+        if dur_rows:
+            st.table(dur_rows)
+        else:
+            st.write("(no tasks)")
+
+        # Conflicts
+        conflicts = scheduler.detect_conflicts(all_tasks)
+        st.subheader("Conflicts")
+        if conflicts.get("too_long"):
+            too_long_rows = [{"task": t.name, "minutes": int(t.time_duration_hours() * 60)} for t in conflicts["too_long"]]
+            st.warning("Tasks that are longer than available time:")
+            st.table(too_long_rows)
+        if conflicts.get("overflow"):
+            overflow_rows = [{"task": t.name, "minutes": int(t.time_duration_hours() * 60)} for t in conflicts["overflow"]]
+            st.warning("Tasks that couldn't fit (overflow):")
+            st.table(overflow_rows)
+        if conflicts.get("duplicates"):
+            dup_rows = [{"task": t.name, "pet": (t.pet.name if t.pet else "(unassigned)" )} for t in conflicts["duplicates"]]
+            st.warning("Duplicate task names detected:")
+            st.table(dup_rows)
+        if conflicts.get("time_conflicts"):
+            tc_rows = [{"task_a": a.name, "pet_a": (a.pet.name if a.pet else "(unassigned)"), "task_b": b.name, "pet_b": (b.pet.name if b.pet else "(unassigned)" )} for a, b in conflicts["time_conflicts"]]
+            st.warning("Time conflicts detected:")
+            st.table(tc_rows)
+        if not any(conflicts.values()):
+            st.success("No conflicts detected")

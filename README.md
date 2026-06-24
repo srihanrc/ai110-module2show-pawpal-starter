@@ -99,10 +99,15 @@ The PawPals+ app now has high priority scheduling where high prior tasks gets sc
 
 Describe your app in numbered steps so a reader can follow along without watching a video:
 
-1. <!-- Describe this step -->
-2. <!-- Describe this step -->
-3. <!-- Describe this step -->
-4. <!-- Describe this step -->
-5. <!-- Add more steps as needed -->
+1. Read the scenario carefully and identify requirements and edge cases.
+2. Draft a UML diagram (classes, attributes, methods, relationships).
+3. Convert UML into Python class stubs (no logic yet).
+4. Implement scheduling logic in small increments.
+5. Add tests to verify key behaviors.
+Connect your logic to the Streamlit UI in app.py.
+Refine UML so it matches what you actually built.
+
 
 **Screenshot or video** *(optional)*: <!-- Insert a screenshot or link to a demo video here -->
+
+http://localhost:8501/

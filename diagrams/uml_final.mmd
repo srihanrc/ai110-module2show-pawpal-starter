@@ -1,0 +1,73 @@
+%% PawPal+ - Final UML (class + sequence)
+
+%% Class diagram showing classes, attributes, methods, and relationships
+classDiagram
+    class PetOwner {
+        +string name
+        +int years_experience
+        +float daily_hours
+        +List~Pet~ pets
+        +get_available_time() float
+        +add_pet(p:Pet) void
+        +remove_pet(name:string) bool
+        +get_all_tasks(incomplete_only:bool=True) List~Task~
+    }
+
+    class Pet {
+        +string name
+        +string speciesType
+        +string foodType
+        +List~string~ list_special_needs
+        +List~Task~ tasks
+        +add_task(t:Task) void
+        +remove_task(name:string) bool
+        +list_tasks(incomplete_only:bool=True) List~Task~
+    }
+
+    class Task {
+        +string name
+        +string description
+        +float time_duration    %% hours
+        +string? frequency
+        +bool completed
+        +datetime? time         %% optional scheduled start
+        +datetime? last_completed
+        +Pet? pet               %% back-reference
+        +time_duration_hours() float
+        +mark_complete() void
+        +mark_pending() void
+        +is_completed() bool
+        +is_due(reference:datetime=None) bool
+        +to_dict() Dict
+    }
+
+    class Scheduler {
+        +PetOwner owner
+        +float time_avail
+        +sort_by_duration(tasks:List~Task~, descending:bool=False) List~Task~
+        +sort_by_time(tasks:List~Task~, ascending:bool=True) List~Task~
+        +get_filtered_tasks(pet_name:Optional[str]=None, completed:Optional[bool]=None, due_only:bool=False) List~Task~
+        +priority_tasks() List~Task~
+        +schedule_tasks() List~Task~
+        +generate_plan(include_conflicts:bool=False) Dict
+        +detect_conflicts(tasks:Optional[List~Task~]=None) Dict
+    }
+
+    PetOwner "1" o-- "*" Pet : owns
+    Pet "1" o-- "*" Task : has
+    Task --> Pet : pet (optional)
+    Scheduler --> PetOwner : uses
+    Scheduler ..> Task : inspects/filters
+    Task ..> Task : <<creates>> next occurrence (mark_complete)
+
+
+%% Sequence diagram showing recurring-task creation behavior
+sequenceDiagram
+    participant TaskObj as Task
+    participant PetObj as Pet
+
+    TaskObj->>TaskObj: mark_complete()
+    Note right of TaskObj: sets `completed` and `last_completed`
+    TaskObj->>TaskObj: create new Task instance for next occurrence
+    TaskObj->>PetObj: Pet.add_task(new Task)
+    Note right of PetObj: new recurring Task appended to pet.tasks
