@@ -1,0 +1,12 @@
+%% PawPal+ - Final UML sequence diagram
+
+%% Sequence diagram showing recurring-task creation behavior
+sequenceDiagram
+    participant TaskObj as Task
+    participant PetObj as Pet
+
+    TaskObj->>TaskObj: mark_complete()
+    Note right of TaskObj: sets completed and last_completed
+    TaskObj->>TaskObj: create new Task instance for next occurrence
+    TaskObj->>PetObj: Pet.add_task(new Task)
+    Note right of PetObj: new recurring Task appended to pet.tasks
